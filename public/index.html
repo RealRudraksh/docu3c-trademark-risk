@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trademark Risk Assessment & Knowledge Graph</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f7f6;
+            color: #333;
+        }
+
+        header {
+            background: #1b2a4a;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #1b2a4a;
+            padding-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #1b2a4a;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            display: inline-block;
+        }
+
+        .HIGH {
+            background: #d9534f;
+        }
+
+        .MEDIUM-HIGH {
+            background: #f0ad4e;
+            color: #333;
+        }
+
+        .MEDIUM {
+            background: #f6c23e;
+            color: #333;
+        }
+
+        .MEDIUM-LOW {
+            background: #36b9cc;
+        }
+
+        .LOW {
+            background: #1cc88a;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Legal Tech Trademark Assessment System</h1>
+        <p>Target Mark: <strong>TEAR, POUR, LIVE MORE</strong> (Classes: 5, 32)</p>
+    </header>
+
+    <div class="container">
+        <h2>Conflict Risk Assessment & Knowledge Graph Findings</h2>
+        <div id="loading">Loading assessment results...</div>
+        <table id="results-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Mark Name</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Classes</th>
+                    <th>Risk Level</th>
+                    <th>Graph Evidence & TMEP Citation</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        fetch('/api/assessments')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                const table = document.getElementById('results-table');
+                table.style.display = 'table';
+                const tbody = document.getElementById('table-body');
+
+                data.assessments.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <strong><td>${item.mark}</td></strong>
+                        <td>${item.status}</td>
+                        <td>${item.owner}</td>
+                        <td>${item.classes.join(', ')}</td>
+                        <td><span class="badge ${item.risk_level}">${item.risk_level}</span></td>
+                        <td>
+                            <ul>${item.evidence.map(e => `<li>${e}</li>`).join('')}</ul>
+                            <small><em>Citation: ${item.tmep_citation}</em></small>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                document.getElementById('loading').innerText = 'Error loading assessments.';
+                console.error(err);
+            });
+    </script>
+</body>
+
+</html>
