@@ -4,88 +4,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trademark Risk Assessment & Knowledge Graph</title>
+    <title>Docu3C — Trademark Risk Assessment</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
-            background: #f4f7f6;
-            color: #333;
+            background: #f0f2f7;
+            color: #2d3748;
         }
 
         header {
-            background: #1b2a4a;
+            background: #111e38;
             color: #fff;
-            padding: 20px;
-            text-align: center;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        header p {
+            margin: 4px 0 0;
+            color: #a0aec0;
+            font-size: 13px;
+        }
+
+        .badge-corpus {
+            background: #2b6cb0;
+            padding: 7px 14px;
+            border-radius: 4px;
+            font-size: 12px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 1400px;
+            margin: 24px auto;
+            padding: 0 20px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+            border-top: 4px solid #111e38;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            margin: 0 0 8px;
+            font-size: 11px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .stat-card.red {
+            border-top-color: #e53e3e;
+        }
+
+        .stat-card.org {
+            border-top-color: #dd6b20;
+        }
+
+        .stat-card.yel {
+            border-top-color: #d69e2e;
+        }
+
+        .stat-card.grn {
+            border-top-color: #38a169;
+        }
+
+        .stat-card.pur {
+            border-top-color: #6b46c1;
+        }
+
+        /* Cards */
+        .card {
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+            padding: 22px;
+            margin-bottom: 24px;
         }
 
         h2 {
-            border-bottom: 2px solid #1b2a4a;
-            padding-bottom: 8px;
+            margin-top: 0;
+            color: #111e38;
+            font-size: 16px;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
         }
 
+        /* Knowledge Graph Box */
+        .kg-box {
+            background: #0d1b2e;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            font-family: monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .kg-box .kv-key {
+            color: #63b3ed;
+        }
+
+        .kg-box .kv-val {
+            color: #68d391;
+        }
+
+        .kg-box .kv-path {
+            color: #f6ad55;
+        }
+
+        .kg-box .kv-rule {
+            color: #fc8181;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filters select,
+        .filters input {
+            padding: 7px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff;
+        }
+
+        .filters label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .filter-count {
+            font-size: 13px;
+            color: #718096;
+            margin-left: auto;
+        }
+
+        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-            font-size: 14px;
+            font-size: 12.5px;
         }
 
         th {
-            background: #1b2a4a;
-            color: white;
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+            padding: 10px 12px;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
         }
 
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        /* Risk Badges */
         .badge {
-            padding: 5px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-weight: bold;
-            color: white;
+            font-weight: 700;
+            color: #fff;
+            font-size: 10px;
             display: inline-block;
+            text-transform: uppercase;
         }
 
         .HIGH {
-            background: #d9534f;
+            background: #c53030;
         }
 
         .MEDIUM-HIGH {
-            background: #f0ad4e;
-            color: #333;
+            background: #c05621;
         }
 
         .MEDIUM {
-            background: #f6c23e;
-            color: #333;
+            background: #b7791f;
         }
 
         .MEDIUM-LOW {
-            background: #36b9cc;
+            background: #2b6cb0;
         }
 
         .LOW {
-            background: #1cc88a;
+            background: #276749;
         }
 
-        ul {
-            margin: 0;
-            padding-left: 15px;
+        /* Confidence bar */
+        .conf-bar {
+            height: 5px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            margin-top: 4px;
+            width: 80px;
+        }
+
+        .conf-fill {
+            height: 5px;
+            border-radius: 3px;
+        }
+
+        /* Evidence list */
+        .ev-list {
+            margin: 4px 0 0;
+            padding-left: 14px;
+        }
+
+        .ev-list li {
+            margin-bottom: 3px;
+            color: #4a5568;
+        }
+
+        /* TMEP citations */
+        .tmep-cite {
+            font-size: 11px;
+            color: #6b46c1;
+            margin-top: 5px;
+        }
+
+        .tmep-cite span {
+            background: #faf5ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 4px;
+            display: inline-block;
+            margin-bottom: 2px;
+            border: 1px solid #e9d8fd;
+        }
+
+        /* Escalation flag */
+        .escalate-flag {
+            background: #fff5f5;
+            border-left: 3px solid #fc8181;
+            padding: 5px 8px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #c53030;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Similarity pill */
+        .sim-pill {
+            font-size: 11px;
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid #bee3f8;
+            white-space: nowrap;
+        }
+
+        /* Class chip */
+        .class-chip {
+            font-size: 10px;
+            background: #e9d8fd;
+            color: #553c9a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 3px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .class-chip.shared {
+            background: #feebc8;
+            color: #7b341e;
+        }
+
+        /* Methodology section */
+        .methodology {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #4a5568;
+        }
+
+        .methodology table {
+            font-size: 12.5px;
+        }
+
+        .methodology th,
+        .methodology td {
+            padding: 8px 12px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Graph path display */
+        .graph-path {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -93,55 +352,270 @@
 <body>
 
     <header>
-        <h1>Legal Tech Trademark Assessment System</h1>
-        <p>Target Mark: <strong>TEAR, POUR, LIVE MORE</strong> (Classes: 5, 32)</p>
+        <div>
+            <h1>⚖️ Docu3C Legal Tech — Trademark Risk Intelligence System</h1>
+            <p>Proposed Mark: <strong>TEAR, POUR, LIVE MORE</strong> &nbsp;|&nbsp; Class 5 (Supplements) &amp; Class 32
+                (Energy/Sports Drinks) &nbsp;|&nbsp; Assessed against USPTO Records</p>
+        </div>
+        <span class="badge-corpus">Corpus: 120 USPTO Records</span>
     </header>
 
     <div class="container">
-        <h2>Conflict Risk Assessment & Knowledge Graph Findings</h2>
-        <div id="loading">Loading assessment results...</div>
-        <table id="results-table" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Mark Name</th>
-                    <th>Status</th>
-                    <th>Owner</th>
-                    <th>Classes</th>
-                    <th>Risk Level</th>
-                    <th>Graph Evidence & TMEP Citation</th>
-                </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
+
+        <!-- Stats Row -->
+        <div class="stats-grid" id="stats-container">
+            <div class="stat-card">
+                <h3>Loading...</h3>
+                <p>—</p>
+            </div>
+        </div>
+
+        <!-- Knowledge Graph Panel -->
+        <div class="card">
+            <h2>🕸️ Knowledge Graph — Architecture &amp; Traceability</h2>
+            <p style="font-size:13px;color:#4a5568;margin-top:0">
+                The Knowledge Graph maps entities (Target Mark, Classes, TMEP Rules, Trademark Records) and their
+                relationships.
+                It drives retrieval, risk assessment, and evidence traceability — not merely visualization.
+            </p>
+            <div class="kg-box" id="kg-summary">Loading graph data...</div>
+            <p class="graph-path">
+                <strong>Primary Traversal Path:</strong>
+                <code style="color:#f6ad55">Target Mark</code> ➜
+                <code style="color:#68d391">Shared Class Node (5 or 32)</code> ➜
+                <code style="color:#63b3ed">Trademark Record</code> ➜
+                <code style="color:#fc8181">TMEP § 1207.01 Rule Evaluation</code>
+            </p>
+        </div>
+
+        <!-- Risk Methodology Panel -->
+        <div class="card">
+            <h2>📐 Risk Methodology (Rule-Based, TMEP-Grounded)</h2>
+            <div class="methodology">
+                <p>Risk is assigned by combining <strong>two signals</strong> per record — never by asking an LLM "is
+                    this HIGH or LOW?":</p>
+                <table style="width:100%;border-collapse:collapse;margin-top:8px">
+                    <thead>
+                        <tr style="background:#f7fafc">
+                            <th>Signal</th>
+                            <th>Weight</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Token (Jaccard) Similarity</strong></td>
+                            <td>60%</td>
+                            <td>Shared word tokens between target and candidate mark</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phonetic / Dominant-Word Overlap</strong></td>
+                            <td>40%</td>
+                            <td>How many of TEAR, POUR, LIVE, MORE appear in candidate mark</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table style="width:100%;border-collapse:collapse;margin-top:12px">
+                    <thead>
+                        <tr style="background:#f7fafc">
+                            <th>Risk Level</th>
+                            <th>Trigger Conditions</th>
+                            <th>Primary TMEP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge HIGH">HIGH</span></td>
+                            <td>Active mark + shared class + combined similarity ≥ 50%</td>
+                            <td>§ 1207.01, § 1207.01(b)(viii), § 1207.01(d)(i)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge MEDIUM-HIGH">MEDIUM-HIGH</span></td>
+                            <td>Active mark + shared class + similarity 25–50%</td>
+                            <td>§ 1207.01, § 1207.01(a)(v), § 1207.01(d)(i)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge MEDIUM">MEDIUM</span></td>
+                            <td>Shared class + low sim, OR no class + high sim</td>
+                            <td>§ 1207.01(a)(v), § 1207.01(b)(iv)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge MEDIUM-LOW">MEDIUM-LOW</span></td>
+                            <td>Abandoned/Cancelled + some overlap</td>
+                            <td>§ 1207.01(d)(iv)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge LOW">LOW</span></td>
+                            <td>No class overlap + combined similarity &lt; 20%</td>
+                            <td>N/A — distinct mark</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top:10px;font-size:12px;color:#718096">
+                    ⚠️ <strong>Uncertainty handling:</strong> When confidence is below threshold or evidence is
+                    borderline,
+                    the system flags for attorney review rather than assigning a confident label. Abandoned marks are
+                    not cited
+                    as direct conflicts per TMEP § 1207.01(d)(iv) but contribute to crowded-field analysis.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Assessment Table -->
+        <div class="card">
+            <h2>📋 Structured Attorney-Facing Conflict Assessment</h2>
+
+            <div class="filters">
+                <label>Filter by Risk:</label>
+                <select id="filterRisk" onchange="renderTable()">
+                    <option value="">All Levels</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM-HIGH">MEDIUM-HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="MEDIUM-LOW">MEDIUM-LOW</option>
+                    <option value="LOW">LOW</option>
+                </select>
+                <label>Status:</label>
+                <select id="filterStatus" onchange="renderTable()">
+                    <option value="">All</option>
+                    <option value="Registered">Registered</option>
+                    <option value="Renewed">Renewed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Published">Published</option>
+                    <option value="Abandoned">Abandoned</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <label>Search:</label>
+                <input type="text" id="searchMark" placeholder="Search mark name..." oninput="renderTable()"
+                    style="width:200px">
+                <span class="filter-count" id="filter-count"></span>
+            </div>
+
+            <div id="loading" class="loading">⏳ Loading assessment data...</div>
+
+            <table id="results-table" style="display:none">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Mark Name</th>
+                        <th>Status</th>
+                        <th>Owner</th>
+                        <th>Classes</th>
+                        <th>Similarity</th>
+                        <th>Risk Level</th>
+                        <th>Confidence</th>
+                        <th>Evidence, TMEP Citations &amp; Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
     </div>
 
     <script>
+        let allData = [];
+
+        // Confidence fill color
+        function confColor(c) {
+            if (c >= 75) return '#e53e3e';
+            if (c >= 55) return '#dd6b20';
+            if (c >= 40) return '#d69e2e';
+            if (c >= 25) return '#3182ce';
+            return '#38a169';
+        }
+
+        function renderStats(meta, graph) {
+            document.getElementById('stats-container').innerHTML = `
+        <div class="stat-card"><h3>Records Analyzed</h3><p>${meta.total_analyzed}</p></div>
+        <div class="stat-card red"><h3>HIGH Risk</h3><p>${meta.high_risk_count}</p></div>
+        <div class="stat-card org"><h3>MEDIUM-HIGH</h3><p>${meta.medium_high_count}</p></div>
+        <div class="stat-card yel"><h3>Escalations</h3><p>${meta.escalation_count}</p></div>
+        <div class="stat-card pur"><h3>Graph Nodes</h3><p>${meta.graph_nodes}</p></div>
+        <div class="stat-card grn"><h3>Graph Edges</h3><p>${meta.graph_edges}</p></div>
+    `;
+        }
+
+        function renderGraph(graph) {
+            const typeCounts = graph.node_type_counts;
+            document.getElementById('kg-summary').innerHTML = `
+<span class="kv-key">Nodes Total    </span>: <span class="kv-val">${graph.total_nodes}</span>  (1 TargetMark + 2 Classes + 6 TMEP Rules + ${typeCounts.TrademarkRecord || 0} TrademarkRecords)
+<span class="kv-key">Edges Total    </span>: <span class="kv-val">${graph.total_edges}</span>  relationships mapped
+<span class="kv-key">Edge Types     </span>: <span class="kv-path">POTENTIAL_CONFLICT</span> | <span class="kv-path">DISTINCT</span> | <span class="kv-path">IN_CLASS</span> | <span class="kv-path">REGISTERED_IN</span> | <span class="kv-path">GOVERNED_BY</span> | <span class="kv-path">ASSESSED_BY</span>
+<span class="kv-key">Graph Use      </span>: <span class="kv-val">Drives risk retrieval — high-risk marks are those with POTENTIAL_CONFLICT edge + ASSESSED_BY → TMEP Rule node</span>
+<span class="kv-key">Traversal      </span>: <span class="kv-path">TARGET → CLASS_5/CLASS_32 (REGISTERED_IN) → TM Records (IN_CLASS) → TMEP_CONFUSION (GOVERNED_BY)</span>
+<span class="kv-key">Traceability   </span>: <span class="kv-val">Every HIGH/MEDIUM-HIGH record has a direct ASSESSED_BY edge to the applicable TMEP rule node</span>
+<span class="kv-rule">⚖️  Legal anchor: All assessments governed by TMEP § 1207.01 DuPont likelihood-of-confusion factors</span>`;
+        }
+
+        function renderTable() {
+            const riskFilter = document.getElementById('filterRisk').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const search = document.getElementById('searchMark').value.toLowerCase();
+
+            const filtered = allData.filter(item => {
+                if (riskFilter && item.risk_level !== riskFilter) return false;
+                if (statusFilter && item.status !== statusFilter) return false;
+                if (search && !item.mark.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            document.getElementById('filter-count').textContent = `Showing ${filtered.length} of ${allData.length} records`;
+
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            filtered.forEach((item, idx) => {
+                const classChips = item.classes.map(c => {
+                    const isShared = item.shared_classes.includes(c);
+                    return `<span class="class-chip ${isShared ? 'shared' : ''}">${isShared ? '⚑ ' : ''}Class ${c}</span>`;
+                }).join('');
+
+                const tmepSpans = item.tmep_citations.map(t =>
+                    `<span>${t}</span>`
+                ).join('');
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+            <td style="color:#a0aec0;font-size:11px">${item.id}</td>
+            <td>
+                <strong style="font-size:13px">${item.mark}</strong><br>
+                <small style="color:#718096">Serial: ${item.serial_number}</small>
+            </td>
+            <td><span style="font-size:12px;font-weight:600;color:${item.status === 'Registered' || item.status === 'Renewed' ? '#276749' : item.status === 'Abandoned' || item.status === 'Cancelled' ? '#9b2c2c' : '#2b6cb0'}">${item.status}</span></td>
+            <td style="font-size:12px;color:#4a5568;max-width:160px">${item.owner}</td>
+            <td>${classChips}</td>
+            <td>
+                <span class="sim-pill">${item.similarity_score}%</span>
+                <div class="conf-bar"><div class="conf-fill" style="width:${item.similarity_score}%;background:${confColor(item.similarity_score)}"></div></div>
+            </td>
+            <td><span class="badge ${item.risk_level}">${item.risk_level}</span></td>
+            <td>
+                <strong style="font-size:14px;color:${confColor(item.confidence)}">${item.confidence}%</strong>
+                <div class="conf-bar"><div class="conf-fill" style="width:${item.confidence}%;background:${confColor(item.confidence)}"></div></div>
+            </td>
+            <td>
+                <ul class="ev-list">${item.evidence.map(e => `<li>${e}</li>`).join('')}</ul>
+                <div class="tmep-cite">📜 ${tmepSpans}</div>
+                ${item.escalation_needed ? '<div class="escalate-flag">⚠️ Borderline confidence — flagged for manual attorney review.</div>' : ''}
+            </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+
         fetch('/api/assessments')
             .then(res => res.json())
             .then(data => {
+                allData = data.assessments;
+                renderStats(data.meta, data.graph);
+                renderGraph(data.graph);
                 document.getElementById('loading').style.display = 'none';
-                const table = document.getElementById('results-table');
-                table.style.display = 'table';
-                const tbody = document.getElementById('table-body');
-
-                data.assessments.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <strong><td>${item.mark}</td></strong>
-                        <td>${item.status}</td>
-                        <td>${item.owner}</td>
-                        <td>${item.classes.join(', ')}</td>
-                        <td><span class="badge ${item.risk_level}">${item.risk_level}</span></td>
-                        <td>
-                            <ul>${item.evidence.map(e => `<li>${e}</li>`).join('')}</ul>
-                            <small><em>Citation: ${item.tmep_citation}</em></small>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                document.getElementById('results-table').style.display = 'table';
+                renderTable();
             })
             .catch(err => {
-                document.getElementById('loading').innerText = 'Error loading assessments.';
+                document.getElementById('loading').innerHTML = '❌ Failed to load data. Make sure the server is running.';
                 console.error(err);
             });
     </script>
